@@ -14,3 +14,4 @@ _git2_*
 # resharper solution user settings
 *sln.DotSettings.user
 *.dtbcache.json
+*.vsidx

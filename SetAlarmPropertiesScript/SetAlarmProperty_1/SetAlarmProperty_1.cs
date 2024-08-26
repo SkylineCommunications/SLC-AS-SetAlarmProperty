@@ -1,15 +1,11 @@
 namespace SetAlarmProperty_1
 {
 	using System;
-	using System.Collections.Generic;
-	using System.Globalization;
-	using System.Text;
-
-	using Microsoft.Win32;
+	using SetAlarmProperty_1.PropertyInput;
+	using SetAlarmProperty_1.ValueInput;
 
 	using Skyline.DataMiner.Automation;
-	using Skyline.DataMiner.Core.DataMinerSystem.Automation;
-	using Skyline.DataMiner.Core.DataMinerSystem.Common;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
 	/// <summary>
 	/// Represents a DataMiner Automation script.
@@ -22,30 +18,15 @@ namespace SetAlarmProperty_1
 		/// <param name="engine">Link with SLAutomation process.</param>
 		public void Run(IEngine engine)
 		{
+			// DO NOT REMOVE THIS COMMENTED OUT CODE OR THE SCRIPT WONT RUN!
+			// Interactive scripts need to be launched differently.
+			// This is determined by a simple string search looking for "engine.ShowUI" in the source code.
+			// However, due to the toolkit nuget package, this string cannot be found here.
+			// So this comment is here as a workaround.
+			// engine.ShowUI();
 			try
 			{
 				RunSafe(engine);
-			}
-			catch (ScriptAbortException)
-			{
-				// Catch normal abort exceptions (engine.ExitFail or engine.ExitSuccess)
-				throw; // Comment if it should be treated as a normal exit of the script.
-			}
-			catch (ScriptForceAbortException)
-			{
-				// Catch forced abort exceptions, caused via external maintenance messages.
-				throw;
-			}
-			catch (ScriptTimeoutException)
-			{
-				// Catch timeout exceptions for when a script has been running for too long.
-				throw;
-			}
-			catch (InteractiveUserDetachedException)
-			{
-				// Catch a user detaching from the interactive script by closing the window.
-				// Only applicable for interactive scripts, can be removed for non-interactive scripts.
-				throw;
 			}
 			catch (Exception e)
 			{
@@ -55,14 +36,27 @@ namespace SetAlarmProperty_1
 
 		private void RunSafe(IEngine engine)
 		{
-			var propertyName = engine.GetScriptParam("Property Name");
-			var rootAlarmId = engine.GetScriptParam("Root Alarm Id");
+			var rootAlarmId = Convert.ToString(engine.GetScriptParam("Root Alarm ID").Value);
+			var propertyName = Convert.ToString(engine.GetScriptParam("Property Name").Value);
+			var controller = new InteractiveController(engine);
+			var propertySelector = new PropertyInputSelector(engine)
+			{
+				RootAlarmId = rootAlarmId,
+				PropertyName = propertyName,
+			};
 
-			string[] ids = rootAlarmId.Value.ToString().Split('/');
-			string dataminerId = ids[0];
-			string elementId = ids[1];
-			string alarmId = ids[2];
-			var property = engine.GetAlarmProperty(Convert.ToInt32(dataminerId), Convert.ToInt32(alarmId), propertyName.Value);
+			if (propertySelector.TryFindProperty())
+			{
+				var valueInputView = new ValueInputView(engine, propertySelector.PropertyName, propertySelector.FoundProperty);
+				var valueInputPresenter = new ValueInputPresenter(valueInputView, propertySelector, engine);
+
+				controller.ShowDialog(valueInputView);
+			}
+			else
+			{
+				// If the property cannot be found, exit with failure
+				engine.ExitFail("Failed to find the specified property. Please check the Root Alarm ID and Property Name.");
+			}
 		}
 	}
 }
