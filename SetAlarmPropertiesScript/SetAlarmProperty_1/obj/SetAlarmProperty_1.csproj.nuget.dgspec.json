@@ -47,6 +47,14 @@
         "net48": {
           "targetAlias": "net48",
           "dependencies": {
+            "Skyline.DataMiner.Core.DataMinerSystem.Automation": {
+              "target": "Package",
+              "version": "[1.1.1.13, )"
+            },
+            "Skyline.DataMiner.Core.DataMinerSystem.Common": {
+              "target": "Package",
+              "version": "[1.1.1.13, )"
+            },
             "Skyline.DataMiner.Dev.Automation": {
               "target": "Package",
               "version": "[10.2.0.25, )"

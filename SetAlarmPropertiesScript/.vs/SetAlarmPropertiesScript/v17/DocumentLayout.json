@@ -1,7 +1,16 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\SaraGL\\Documents\\LGITrapsAPP-AutomationScript-SetPropertiesOnAlarms\\SetAlarmPropertiesScript\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7CB9CA82-EA28-4B3A-AB12-A7EAF835A5C1}|SetAlarmProperty_1\\SetAlarmProperty_1.csproj|c:\\users\\saragl\\documents\\lgitrapsapp-automationscript-setpropertiesonalarms\\setalarmpropertiesscript\\setalarmproperty_1\\setalarmproperty_1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CB9CA82-EA28-4B3A-AB12-A7EAF835A5C1}|SetAlarmProperty_1\\SetAlarmProperty_1.csproj|solutionrelative:setalarmproperty_1\\setalarmproperty_1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF271D21-7D87-40B8-B7F7-4B0A969A9030}|SetAlarmProperty{AF271D21-7D87-40B8-B7F7-4B0A969A9030}|C:\\Users\\SaraGL\\Documents\\LGITrapsAPP-AutomationScript-SetPropertiesOnAlarms\\SetAlarmPropertiesScript\\SetAlarmProperty.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{AF271D21-7D87-40B8-B7F7-4B0A969A9030}|SetAlarmProperty{AF271D21-7D87-40B8-B7F7-4B0A969A9030}|solutionrelative:SetAlarmProperty.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,6 +47,32 @@
             {
               "$type": "Bookmark",
               "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SetAlarmProperty_1.cs",
+              "DocumentMoniker": "C:\\Users\\SaraGL\\Documents\\LGITrapsAPP-AutomationScript-SetPropertiesOnAlarms\\SetAlarmPropertiesScript\\SetAlarmProperty_1\\SetAlarmProperty_1.cs",
+              "RelativeDocumentMoniker": "SetAlarmProperty_1\\SetAlarmProperty_1.cs",
+              "ToolTip": "C:\\Users\\SaraGL\\Documents\\LGITrapsAPP-AutomationScript-SetPropertiesOnAlarms\\SetAlarmPropertiesScript\\SetAlarmProperty_1\\SetAlarmProperty_1.cs",
+              "RelativeToolTip": "SetAlarmProperty_1\\SetAlarmProperty_1.cs",
+              "ViewState": "AQIAABsAAAAAAAAAAAAgwEAAAAB2AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-23T13:20:33.385Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SetAlarmProperty.xml",
+              "DocumentMoniker": "C:\\Users\\SaraGL\\Documents\\LGITrapsAPP-AutomationScript-SetPropertiesOnAlarms\\SetAlarmPropertiesScript\\SetAlarmProperty.xml",
+              "RelativeDocumentMoniker": "SetAlarmProperty.xml",
+              "ToolTip": "C:\\Users\\SaraGL\\Documents\\LGITrapsAPP-AutomationScript-SetPropertiesOnAlarms\\SetAlarmPropertiesScript\\SetAlarmProperty.xml",
+              "RelativeToolTip": "SetAlarmProperty.xml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003576|",
+              "WhenOpened": "2024-08-23T13:19:22.201Z",
+              "EditorCaption": ""
             }
           ]
         }

@@ -4,8 +4,13 @@ namespace SetAlarmProperty_1
 	using System.Collections.Generic;
 	using System.Globalization;
 	using System.Text;
+
+	using Microsoft.Win32;
+
 	using Skyline.DataMiner.Automation;
-	
+	using Skyline.DataMiner.Core.DataMinerSystem.Automation;
+	using Skyline.DataMiner.Core.DataMinerSystem.Common;
+
 	/// <summary>
 	/// Represents a DataMiner Automation script.
 	/// </summary>
@@ -50,7 +55,14 @@ namespace SetAlarmProperty_1
 
 		private void RunSafe(IEngine engine)
 		{
-			// TODO: Define code here
+			var propertyName = engine.GetScriptParam("Property Name");
+			var rootAlarmId = engine.GetScriptParam("Root Alarm Id");
+
+			string[] ids = rootAlarmId.Value.ToString().Split('/');
+			string dataminerId = ids[0];
+			string elementId = ids[1];
+			string alarmId = ids[2];
+			var property = engine.GetAlarmProperty(Convert.ToInt32(dataminerId), Convert.ToInt32(alarmId), propertyName.Value);
 		}
 	}
 }

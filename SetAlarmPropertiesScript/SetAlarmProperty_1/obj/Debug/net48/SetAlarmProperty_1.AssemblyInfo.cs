@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SetAlarmProperty_1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1e2c034372ecb1a6fc7ab900959ee3b244099d0e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+feee02782f73b3e0d013ef433977a8c34ea6c52b")]
 [assembly: System.Reflection.AssemblyProductAttribute("SetAlarmProperty_1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SetAlarmProperty_1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
