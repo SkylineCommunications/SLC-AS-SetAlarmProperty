@@ -15,3 +15,4 @@ _git2_*
 *sln.DotSettings.user
 *.dtbcache.json
 *.vsidx
+/SetAlarmPropertiesScript/.vs/SetAlarmPropertiesScript/v17
