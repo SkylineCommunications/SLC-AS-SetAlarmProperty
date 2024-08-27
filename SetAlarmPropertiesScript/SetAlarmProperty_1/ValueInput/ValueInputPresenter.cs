@@ -110,8 +110,7 @@
 				}
 				else
 				{
-					_engine.ExitFail($"Property '{propertyName}' not found in the alarm event.");
-					return null;
+					return _engine.GetAlarmProperty(dataMinerId, elementId, alarmId, propertyName);
 				}
 			}
 			catch (Exception e)
