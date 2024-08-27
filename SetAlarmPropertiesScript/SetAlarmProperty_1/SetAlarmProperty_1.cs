@@ -37,13 +37,11 @@ namespace SetAlarmProperty_1
 		private void RunSafe(IEngine engine)
 		{
 			var controller = new InteractiveController(engine);
-			var rootAlarmIds = Convert.ToString(engine.GetScriptParam("Root Alarm ID").Value);
-			var propertyName = Convert.ToString(engine.GetScriptParam("Property Name").Value);
+			var rootAlarmIds = engine.GetScriptParam("Root Alarm ID").Value;
+			var propertyName = engine.GetScriptParam("Property Name").Value;
 			var valueInputPresenter = new ValueInputPresenter(engine, rootAlarmIds, propertyName,controller);
 
-			
 			controller.ShowDialog(valueInputPresenter.View);
-			
 		}
 	}
 }

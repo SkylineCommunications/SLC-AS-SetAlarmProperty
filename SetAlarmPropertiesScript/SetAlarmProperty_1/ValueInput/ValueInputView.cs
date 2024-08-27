@@ -25,7 +25,7 @@
 
 		public event EventHandler OkClicked;
 
-		public Button OkButton { get; }
+		private Button OkButton { get; }
 
 		public string GetNewValue()
 		{

@@ -57,27 +57,29 @@
 								   .ToList();
 		}
 
-		private (int DataMinerId, int AlarmId) ParseRootAlarmId(string rootAlarmId)
+		private void ParseRootAlarmId(string rootAlarmId, out int dataMinerId, out int alarmId)
 		{
 			string[] ids = rootAlarmId.Split('/');
 			if (ids.Length != 2)
 			{
 				_engine.ExitFail("Invalid RootAlarmId format. Expected format: DataMinerID/AlarmId.");
+				dataMinerId = 0;
+				alarmId = 0;
+				return;
 			}
 
-			int dataMinerId = Convert.ToInt32(ids[0]);
-			int alarmId = Convert.ToInt32(ids[1]);
-
-			return (dataMinerId, alarmId);
+			dataMinerId = Convert.ToInt32(ids[0]);
+			alarmId = Convert.ToInt32(ids[1]);
 		}
 
 		private string GetCurrentValue(string rootAlarmId, string propertyName)
 		{
 			try
 			{
-				var (dataMinerId, alarmId) = ParseRootAlarmId(rootAlarmId);
+				ParseRootAlarmId(rootAlarmId, out int dataMinerId, out int alarmId);
 
 				GetAlarmDetailsMessage getAlarmDetailsMessage = new GetAlarmDetailsMessage(dataMinerId, alarmId);
+				getAlarmDetailsMessage.RequestFullTree = true;
 				DMSMessage[] responseMessage = Engine.SLNet.SendMessage(getAlarmDetailsMessage);
 
 				if (responseMessage.Length == 0)
@@ -100,7 +102,17 @@
 				}
 
 				AlarmEventMessage alarmEvent = (AlarmEventMessage)responseTreeMessage.Last();
-				return _engine.GetAlarmProperty(dataMinerId, elementId, alarmEvent.AlarmID, propertyName);
+				var property = alarmEvent.Properties.FirstOrDefault(p => p.Name.Equals(propertyName));
+
+				if (property != null)
+				{
+					return property.Value;
+				}
+				else
+				{
+					_engine.ExitFail($"Property '{propertyName}' not found in the alarm event.");
+					return null;
+				}
 			}
 			catch (Exception e)
 			{
@@ -115,7 +127,7 @@
 			{
 				try
 				{
-					var (dataMinerId, alarmId) = ParseRootAlarmId(rootAlarmId);
+					ParseRootAlarmId(rootAlarmId, out int dataMinerId, out int alarmId);
 
 					_engine.SetAlarmProperty(dataMinerId, alarmId, propertyName, newValue);
 				}
