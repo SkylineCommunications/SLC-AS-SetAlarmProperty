@@ -1,10 +1,10 @@
 namespace SetAlarmProperty_1
 {
 	using System;
-	using SetAlarmProperty_1.PropertyInput;
 	using SetAlarmProperty_1.ValueInput;
 
 	using Skyline.DataMiner.Automation;
+	using Skyline.DataMiner.Net.Messages;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
 	/// <summary>
@@ -36,26 +36,14 @@ namespace SetAlarmProperty_1
 
 		private void RunSafe(IEngine engine)
 		{
-			var rootAlarmId = Convert.ToString(engine.GetScriptParam("Root Alarm ID").Value);
-			var propertyName = Convert.ToString(engine.GetScriptParam("Property Name").Value);
 			var controller = new InteractiveController(engine);
-			var propertySelector = new PropertyInputSelector(engine)
-			{
-				RootAlarmId = rootAlarmId,
-				PropertyName = propertyName,
-			};
+			var rootAlarmIds = Convert.ToString(engine.GetScriptParam("Root Alarm ID").Value);
+			var propertyName = Convert.ToString(engine.GetScriptParam("Property Name").Value);
+			var valueInputPresenter = new ValueInputPresenter(engine, rootAlarmIds, propertyName,controller);
 
-			if (propertySelector.TryFindProperty())
-			{
-				var valueInputView = new ValueInputView(engine, propertySelector.PropertyName, propertySelector.FoundProperty);
-				var valueInputPresenter = new ValueInputPresenter(valueInputView, propertySelector, engine);
-
-				controller.ShowDialog(valueInputView);
-			}
-			else
-			{
-				engine.ExitFail("Failed to find the specified property. Please check the Root Alarm ID and Property Name.");
-			}
+			
+			controller.ShowDialog(valueInputPresenter.View);
+			
 		}
 	}
 }

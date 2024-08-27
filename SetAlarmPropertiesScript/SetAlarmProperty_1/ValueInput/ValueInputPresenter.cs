@@ -1,41 +1,128 @@
 ﻿namespace SetAlarmProperty_1.ValueInput
 {
 	using System;
-	using SetAlarmProperty_1.PropertyInput;
+	using System.Collections.Generic;
+	using System.Linq;
 	using Skyline.DataMiner.Automation;
+	using Skyline.DataMiner.Net;
+	using Skyline.DataMiner.Net.Messages;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
 	public class ValueInputPresenter
 	{
-		private readonly ValueInputView _view;
-		private readonly PropertyInputSelector _propertySelector;
 		private readonly IEngine _engine;
+		private readonly List<string> _rootAlarmIds;
+		private readonly string _propertyName;
 
-		public ValueInputPresenter(ValueInputView view, PropertyInputSelector propertySelector, IEngine engine)
+		private readonly InteractiveController _interactiveController;
+
+		public ValueInputPresenter(IEngine engine, string rootAlarmIds, string propertyName, InteractiveController interactiveController)
 		{
-			_view = view;
-			_propertySelector = propertySelector;
 			_engine = engine;
 
-			_view.OkClicked += OnOkButtonClicked;
+			_rootAlarmIds = ParseRootAlarmIds(rootAlarmIds);
+			_propertyName = propertyName;
+			_interactiveController = interactiveController;
+
+			string currentValue = GetCurrentValue(_rootAlarmIds.First(), _propertyName);
+			if (currentValue == null)
+			{
+				engine.ExitFail($"Failed to retrieve the property value for the first RootAlarmId {_rootAlarmIds.First()}.");
+				return;
+			}
+
+			View = new ValueInputView(engine, _propertyName, currentValue);
+
+			View.OkClicked += OnOkButtonClicked;
 		}
 
-		public event EventHandler Finished;
+		public ValueInputView View { get; }
 
 		private void OnOkButtonClicked(object sender, EventArgs e)
 		{
-			string newValue = _view.GetNewValue();
+			string newValue = View.GetNewValue();
 
+			SetValueForAll(_rootAlarmIds, _propertyName, newValue);
+
+			_engine.GenerateInformation("Property values updated successfully for all Root Alarm IDs.");
+			_interactiveController.Stop();
+		}
+
+		private List<string> ParseRootAlarmIds(string rootAlarmIdParam)
+		{
+			// Parse the input RootAlarmId array
+			rootAlarmIdParam = rootAlarmIdParam.Trim('[', ']');
+			return rootAlarmIdParam.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+								   .Select(id => id.Trim(' ', '\"'))
+								   .ToList();
+		}
+
+		private (int DataMinerId, int AlarmId) ParseRootAlarmId(string rootAlarmId)
+		{
+			string[] ids = rootAlarmId.Split('/');
+			if (ids.Length != 2)
+			{
+				_engine.ExitFail("Invalid RootAlarmId format. Expected format: DataMinerID/AlarmId.");
+			}
+
+			int dataMinerId = Convert.ToInt32(ids[0]);
+			int alarmId = Convert.ToInt32(ids[1]);
+
+			return (dataMinerId, alarmId);
+		}
+
+		private string GetCurrentValue(string rootAlarmId, string propertyName)
+		{
 			try
 			{
-				string[] ids = _propertySelector.RootAlarmId.Split('/');
-				int dataMinerId = Convert.ToInt32(ids[0]);
-				int alarmId = Convert.ToInt32(ids[2]);
+				var (dataMinerId, alarmId) = ParseRootAlarmId(rootAlarmId);
 
-				_engine.SetAlarmProperty(dataMinerId, alarmId, _propertySelector.PropertyName, newValue);
+				GetAlarmDetailsMessage getAlarmDetailsMessage = new GetAlarmDetailsMessage(dataMinerId, alarmId);
+				DMSMessage[] responseMessage = Engine.SLNet.SendMessage(getAlarmDetailsMessage);
+
+				if (responseMessage.Length == 0)
+				{
+					_engine.ExitFail("No response received for GetAlarmDetailsMessage.");
+					return null;
+				}
+
+				AlarmEventMessage alarmDetailsResponse = (AlarmEventMessage)responseMessage[0];
+				int elementId = alarmDetailsResponse.ElementID;
+
+				AlarmTreeID alarmTreeID = new AlarmTreeID(new ElementID(dataMinerId, elementId), alarmId);
+				GetAlarmTreeDetailsMessage getAlarmTreeDetailsMessage = new GetAlarmTreeDetailsMessage(alarmTreeID);
+				DMSMessage[] responseTreeMessage = Engine.SLNet.SendMessage(getAlarmTreeDetailsMessage);
+
+				if (responseTreeMessage.Length == 0)
+				{
+					_engine.ExitFail("No response received for GetAlarmTreeDetailsMessage.");
+					return null;
+				}
+
+				AlarmEventMessage alarmEvent = (AlarmEventMessage)responseTreeMessage.Last();
+				return _engine.GetAlarmProperty(dataMinerId, elementId, alarmEvent.AlarmID, propertyName);
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
-				_engine.ExitFail("Failed to update property value: " + ex.Message);
+				_engine.ExitFail("Error in GetCurrentValue: " + e.Message);
+				return null;
+			}
+		}
+
+		private void SetValueForAll(List<string> rootAlarmIds, string propertyName, string newValue)
+		{
+			foreach (var rootAlarmId in rootAlarmIds)
+			{
+				try
+				{
+					var (dataMinerId, alarmId) = ParseRootAlarmId(rootAlarmId);
+
+					_engine.SetAlarmProperty(dataMinerId, alarmId, propertyName, newValue);
+				}
+				catch (Exception ex)
+				{
+					_engine.GenerateInformation($"Failed to set the property for RootAlarmId {rootAlarmId}: {ex.Message}");
+				}
 			}
 		}
 	}
