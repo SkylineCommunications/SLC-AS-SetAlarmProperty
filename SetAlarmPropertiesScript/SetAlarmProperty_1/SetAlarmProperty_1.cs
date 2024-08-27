@@ -54,7 +54,6 @@ namespace SetAlarmProperty_1
 			}
 			else
 			{
-				// If the property cannot be found, exit with failure
 				engine.ExitFail("Failed to find the specified property. Please check the Root Alarm ID and Property Name.");
 			}
 		}

@@ -32,7 +32,6 @@
 				int alarmId = Convert.ToInt32(ids[2]);
 
 				_engine.SetAlarmProperty(dataMinerId, alarmId, _propertySelector.PropertyName, newValue);
-				_engine.ExitSuccess("Property value updated successfully.");
 			}
 			catch (Exception ex)
 			{
