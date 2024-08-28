@@ -1,1 +1,1 @@
-# LGITrapsAPP-AutomationScript-SetPropertiesOnAlarms
+# SLC-AS-SetAlarmProperty
