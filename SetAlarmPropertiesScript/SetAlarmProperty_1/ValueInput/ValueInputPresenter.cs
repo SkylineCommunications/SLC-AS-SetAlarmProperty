@@ -88,21 +88,8 @@
 					return null;
 				}
 
-				AlarmEventMessage alarmDetailsResponse = (AlarmEventMessage)responseMessage[0];
-				int elementId = alarmDetailsResponse.ElementID;
-
-				AlarmTreeID alarmTreeID = new AlarmTreeID(new ElementID(dataMinerId, elementId), alarmId);
-				GetAlarmTreeDetailsMessage getAlarmTreeDetailsMessage = new GetAlarmTreeDetailsMessage(alarmTreeID);
-				DMSMessage[] responseTreeMessage = Engine.SLNet.SendMessage(getAlarmTreeDetailsMessage);
-
-				if (responseTreeMessage.Length == 0)
-				{
-					_engine.ExitFail("No response received for GetAlarmTreeDetailsMessage.");
-					return null;
-				}
-
-				AlarmEventMessage alarmEvent = (AlarmEventMessage)responseTreeMessage.Last();
-				var property = alarmEvent.Properties.FirstOrDefault(p => p.Name.Equals(propertyName));
+				AlarmEventMessage alarmDetailsResponse = (AlarmEventMessage)responseMessage.Last(); // expected chronological order of alarms under root. [SGL]
+				var property = alarmDetailsResponse.Properties.FirstOrDefault(p => p.Name.Equals(propertyName));
 
 				if (property != null)
 				{
@@ -110,7 +97,7 @@
 				}
 				else
 				{
-					return _engine.GetAlarmProperty(dataMinerId, elementId, alarmId, propertyName);
+					return _engine.GetAlarmProperty(dataMinerId, alarmDetailsResponse.ElementID, alarmId, propertyName);
 				}
 			}
 			catch (Exception e)

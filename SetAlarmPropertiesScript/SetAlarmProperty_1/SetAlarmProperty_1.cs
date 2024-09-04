@@ -41,7 +41,7 @@ namespace SetAlarmProperty_1
 			var propertyName = engine.GetScriptParam("Property Name").Value;
 			var valueInputPresenter = new ValueInputPresenter(engine, rootAlarmIds, propertyName,controller);
 
-			controller.ShowDialog(valueInputPresenter.View);
+			controller.Run(valueInputPresenter.View);
 		}
 	}
 }

@@ -16,3 +16,5 @@ _git2_*
 *.dtbcache.json
 *.vsidx
 /SetAlarmPropertiesScript/.vs/SetAlarmPropertiesScript/v17
+SetAlarmPropertiesScript/.vs/SetAlarmPropertiesScript/DesignTimeBuild/.dtbcache.v2
+SetAlarmPropertiesScript/.vs/
